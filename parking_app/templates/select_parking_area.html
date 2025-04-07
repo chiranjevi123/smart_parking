@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Parking Area</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>Select a Parking Area</h2>
+        <p>Booking Date: {{ request.session.booking_date }} | Booking Time: {{ request.session.booking_time }}</p>
+
+       
+
+        <form method="post" id="parkingForm">
+            {% csrf_token %}
+            <label for="parking_area">Choose Parking Area:</label>
+            <select id="parking_area" name="parking_area" required>
+                {% for area in parking_areas %}
+                    <option value="{{ area.id }}">{{ area.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="proceed-btn">Proceed</button>
+        </form>
+        
+        <script>
+            document.getElementById("parkingForm").addEventListener("submit", function(event) {
+                event.preventDefault();
+                let selectedArea = document.getElementById("parking_area").value;
+                if (selectedArea) {
+                    let url = "{% url 'select_slot' 9999 %}".replace("9999", selectedArea);
+                    window.location.href = url;  // Redirect to the select slot page
+                }
+            });
+        </script>
+        
+        
+        
+        
+        
+        
+    </div>
+</body>
+</html>

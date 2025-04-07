@@ -1,0 +1,67 @@
+{% load static %}
+{% load custom_tags %}  <!-- Load custom template tag for user role -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | parQmitra</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">parQmitra</div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="{% url 'services' %}">Services</a></li>
+                <li><a href="{% url 'contact' %}">Contact</a></li>
+
+                <!-- {% if user.is_authenticated %}
+                    {% if user|user_role == "admin" %}
+                        <li><a href="{% url 'admin_dashboard' %}">Admin Dashboard</a></li>
+                    {% else %}
+                        <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'register' %}">Register</a></li>
+                {% endif %} -->
+
+                {% if user.is_authenticated %}
+                    {% if user|user_role == "admin" %}
+                        <li><a href="{% url 'admin_dashboard' %}">Admin Dashboard</a></li>
+                        <li><a href="{% url 'qr_scanner' %}">Scan QR</a></li> <!-- ✅ Added -->
+                    {% else %}
+                        <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    {% endif %}
+                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                     <li><a href="{% url 'register' %}">Register</a></li>
+                {% endif %}
+
+
+
+
+
+
+                
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to parQmitra</h1>
+            <p>Your Smart QR-Based Vehicle Parking System</p>
+            <a href="{% url 'login' %}" class="btn">Get Started</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 parQmitra. All rights reserved.</p>
+    </footer>
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

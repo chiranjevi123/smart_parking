@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Slot - {{ parking_area.name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+        }
+        .slots-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .slot {
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            border: none;
+        }
+        .available {
+            background-color: green;
+            color: white;
+        }
+        .booked {
+            background-color: red;
+            color: white;
+            cursor: not-allowed;
+        }
+        .pay-button {
+            margin-top: 20px;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            transition: 0.3s;
+        }
+        .pay-button:disabled {
+            background-color: gray;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Select a Slot in {{ parking_area.name }}</h2>
+    <p><strong>Slot Price:</strong> ₹{{ parking_area.price_per_slot }}</p>
+
+    <!-- Slots Grid -->
+    <div class="slots-container">
+        {% for slot in slots %}
+            <button class="slot {% if slot.is_booked %}booked{% else %}available{% endif %}" 
+                    {% if slot.is_booked %}disabled{% else %}onclick="selectSlot({{ slot.id }})"{% endif %}
+                    id="slot-{{ slot.id }}">
+                Slot {{ slot.slot_number }}
+            </button>
+        {% endfor %}
+    </div>
+
+    <!-- Pay & Book Slot Button -->
+    <form id="payment-form" action="" method="GET">
+        <input type="hidden" name="slot_id" id="selected-slot-id">
+        <button type="submit" id="pay-button" class="pay-button" disabled>Pay & Book Slot</button>
+    </form>
+</div>
+
+<script>
+    let selectedSlotId = null;
+
+    function selectSlot(slotId) {
+    // Remove highlight from all slots
+    document.querySelectorAll('.available').forEach(slot => {
+        slot.style.border = 'none';
+    });
+
+    // Highlight selected slot
+    let selectedSlot = document.getElementById(`slot-${slotId}`);
+    selectedSlot.style.border = '3px solid yellow';
+
+    // Set hidden input value
+    selectedSlotId = slotId;
+    document.getElementById('selected-slot-id').value = slotId;
+    document.getElementById('pay-button').disabled = false;
+
+    // 💡 Set the correct form action dynamically
+    const form = document.getElementById('payment-form');
+    form.action = `/proceed-to-payment/${slotId}/`;  // ✅ Correct path
+}
+
+</script>
+
+</body>
+</html>

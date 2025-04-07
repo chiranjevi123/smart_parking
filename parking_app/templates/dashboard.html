@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h2>Welcome, {{ user.username }}!</h2>
+            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+        </header>
+
+        <!-- Parking History Section -->
+        <section class="history-section">
+            <h3>Your Parking History</h3>
+            <table>
+                <tr>
+                    <th>Parking Slot</th>
+                    <th>Entry Time</th>
+                    <th>Exit Time</th>
+                    <th>Status</th>
+                </tr>
+                {% for record in parking_history %}
+                <tr>
+                    <td>{{ record.slot_number }}</td>
+                    <td>{{ record.entry_time }}</td>
+                    <td>{{ record.exit_time }}</td>
+                    <td class="{{ record.status|lower }}">{{ record.status }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">No parking records found.</td></tr>
+                {% endfor %}
+            </table>
+        </section>
+
+        <!-- Book a Slot Section -->
+        <section class="booking-section">
+            <h3>Book a Parking Slot</h3>
+            <form method="post" action="{% url 'select_parking_area' %}">
+                {% csrf_token %}
+                <label for="booking_date">Select Date:</label>
+                <input type="date" id="booking_date" name="booking_date" required>
+
+                <label for="booking_time">Select Time:</label>
+                <input type="time" id="booking_time" name="booking_time" required>
+
+                <button type="submit" class="proceed-btn">Proceed</button>
+            </form>
+        </section>
+    </div>
+</body>
+</html>

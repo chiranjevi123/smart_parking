@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Parking Areas</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/admin_dashboard.css' %}">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+            <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'manage_parking_areas' %}">Manage Parking Areas</a></li>
+            <li><a href="{% url 'manage_slots' %}">Manage Slots</a></li>
+            <li><a href="{% url 'view_bookings' %}">View Bookings</a></li>
+            <li><a href="{% url 'logout' %}" class="logout-btn">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <h2>Manage Parking Areas</h2>
+
+        <!-- Form to Add Parking Area -->
+        <form method="post" action="{% url 'add_parking_area' %}">
+            {% csrf_token %}
+            <label for="name">Parking Area Name:</label>
+            <input type="text" name="name" required>
+            
+            <label for="total_slots">Total Slots:</label>
+            <input type="number" name="total_slots" required>
+            <br>
+            <label for="price_per_slot">Price per Slot:</label>
+            <input type="number" step="0.01" name="price_per_slot" required>
+            <br>
+            <button type="submit">Add Parking Area</button>
+        </form>
+        
+
+        <h3>Existing Parking Areas</h3>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Total Slots</th>
+                <th>Price per Slot</th>
+                <th>Actions</th>
+            </tr>
+            {% for area in parking_areas %}
+            <tr>
+                <td>{{ area.name }}</td>
+                <td>{{ area.total_slots }}</td>
+                <td>${{ area.price_per_slot }}</td>
+                <td>
+                    <form method="POST" action="{% url 'delete_parking_area' area.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-btn">Delete</button>
+                    </form>
+                    <button onclick="openEditModal('{{ area.id }}', '{{ area.name }}', '{{ area.total_slots }}', '{{ area.price_per_slot }}')">Edit</button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No parking areas found.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- Modal for Editing -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h2>Edit Parking Area</h2>
+            <form method="POST" action="{% url 'edit_parking_area' %}">
+                {% csrf_token %}
+                <input type="hidden" id="edit_id" name="area_id">
+                <input type="text" id="edit_name" name="name" required>
+                <input type="number" id="edit_slots" name="total_slots" required>
+                <input type="text" id="edit_price" name="price_per_slot" required>
+                <button type="submit">Update</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openEditModal(id, name, slots, price) {
+            document.getElementById("edit_id").value = id;
+            document.getElementById("edit_name").value = name;
+            document.getElementById("edit_slots").value = slots;
+            document.getElementById("edit_price").value = price;
+            document.getElementById("editModal").style.display = "block";
+        }
+        function closeEditModal() {
+            document.getElementById("editModal").style.display = "none";
+        }
+    </script>
+</body>
+</html>

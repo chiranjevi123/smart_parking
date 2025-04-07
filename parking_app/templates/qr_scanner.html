@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QR Code Scanner</title>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #reader {
+            width: 300px;
+            margin: auto;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .btn {
+            padding: 10px 15px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>QR Code Scanner</h2>
+    <div id="reader"></div>
+
+    <div class="result" id="result">Scan a QR Code to verify booking.</div>
+    <script>
+        function onScanSuccess(decodedText, decodedResult) {
+            // Redirect to result view with scanned data
+            window.location.href = "/scan_qr_result/?data=" + encodeURIComponent(decodedText);
+        }
+    
+        var html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", { fps: 10, qrbox: 250 });
+    
+        html5QrcodeScanner.render(onScanSuccess);
+    </script>
+    
+
+</body>
+</html>

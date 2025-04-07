@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/admin_dashboard.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js for stats -->
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+            <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'manage_parking_areas' %}">Manage Parking Areas</a></li>
+            <li><a href="{% url 'manage_slots' %}">Manage Slots</a></li>
+            <li><a href="{% url 'view_bookings' %}">View Bookings</a></li>
+            <li><a href="{% url 'logout' %}" class="logout-btn">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <h2>Admin Dashboard</h2>
+
+        <div class="stats">
+            <div class="card">
+                <h3>Total Users</h3>
+                <p>{{ total_users }}</p>
+            </div>
+            <div class="card">
+                <h3>Booked Slots</h3>
+                <p>{{ booked_slots }}</p>
+            </div>
+            <div class="card">
+                <h3>Available Slots</h3>
+                <p>{{ available_slots }}</p>
+            </div>
+        </div>
+
+        <canvas id="parkingChart" width="400" height="150"></canvas>
+
+        <h3>All Parking Records</h3>
+        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search by username...">
+        
+        <table id="parkingTable">
+            <tr>
+                <th>Username</th>
+                <th>Parking Slot</th>
+                <th>Entry Time</th>
+                <th>Exit Time</th>
+                <th>Status</th>
+                <th>QR Code</th>
+                <th>Actions</th>
+            </tr>
+            {% for record in parking_records %}
+            <tr>
+                <td>{{ record.user.username }}</td>
+                <td>{{ record.slot.slot_number }} - {{ record.slot.area.name }}</td>  <!-- Updated Slot Display -->
+                <td>{{ record.entry_time }}</td>
+                <td>{{ record.exit_time|default:"-" }}</td>
+                <td>{{ record.status }}</td>
+                <td>
+                    {% if record.qr_code %}
+                        <a href="{{ record.qr_code.url }}" download>Download</a>
+                    {% else %}
+                        No QR Code
+                    {% endif %}
+                </td>
+                <td>
+                    <form method="POST" action="{% url 'cancel_booking' record.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Cancel</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7">No parking records found.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <script>
+        function searchTable() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("parkingTable");
+            tr = table.getElementsByTagName("tr");
+            
+            for (i = 1; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    tr[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+                }
+            }
+        }
+
+        var ctx = document.getElementById('parkingChart').getContext('2d');
+        var parkingChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Booked Slots', 'Available Slots'],
+                datasets: [{
+                    data: [ booked_slots,available_slots],
+                    backgroundColor: ['#ff6384', '#36a2eb']
+                }]
+            }
+        });
+    </script>
+</body>
+</html>

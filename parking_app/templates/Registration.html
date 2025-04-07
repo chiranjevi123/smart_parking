@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | parQmitra</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/Registration.css' %}">
+</head>
+<body>
+    <div class="login-box">
+        <div class="login-header">
+            <header>Register</header>
+        </div>
+        <form method="POST" action="{% url 'register_view' %}">
+            {% csrf_token %}
+            <div class="input-box">
+                <input type="text" name="username" class="input-field" placeholder="Username" required>
+            </div>
+            <div class="input-box">
+                <input type="email" name="email" class="input-field" placeholder="Email" required>
+            </div>
+            <div class="input-box">
+                <input type="password" name="password" class="input-field" placeholder="Password" required>
+            </div>
+            <div class="input-box">
+                <input type="password" name="confirm_password" class="input-field" placeholder="Confirm Password" required>
+            </div>
+            <div class="input-box">
+                <select name="user_type" class="input-field">
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div class="input-submit">
+                <button type="submit" class="submit-btn">Sign Up</button>
+            </div>
+            <div class="sign-up-link">
+                <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
