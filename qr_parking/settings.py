@@ -161,7 +161,7 @@ ROOT_URLCONF = 'qr_parking.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'parking_app', 'templates')],
+        'DIRS': [],
         
         
         'APP_DIRS': True,
