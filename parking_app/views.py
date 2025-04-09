@@ -26,7 +26,7 @@ def contact(request):
     return render(request, 'contact.html')
 
 def register(request):
-    return render(request, 'parking_app/registration.html')
+    return render(request, 'registration.html')
 
 def register_view(request):
     if request.method == "POST":
